@@ -1,6 +1,6 @@
-package br.com.tutoraia.service;
+package br.com.tutoraia.servico;
 
-import br.com.tutoraia.model.User;
+import br.com.tutoraia.modelo.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -18,9 +18,9 @@ import java.time.ZoneOffset;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
-public class TokenService {
+public class TokenServico {
 
-    private String password = "SENHASUPERSECRETA";
+    private String password = "senhaescondida";
 
     public String getSubject(String tokenJWT){
         try {

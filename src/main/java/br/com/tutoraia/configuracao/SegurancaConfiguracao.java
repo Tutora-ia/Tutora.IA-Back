@@ -1,4 +1,4 @@
-package br.com.tutoraia.configuration;
+package br.com.tutoraia.configuracao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,25 +15,25 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SegurancaConfiguracao extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    SecurityFilter securityFilter;
+    FiltroSeguranca filtroSeguranca;
 
     public void configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .csrf().disable()
-                .authorizeRequests().antMatchers(HttpMethod.POST, "/v1/auth/sign-up").permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/v1/auth/cadastro").permitAll()
                 .and().authorizeRequests().antMatchers("/v2/api-docs",
-                        "/configuration/ui",
-                        "/swagger-resources/**",
-                        "/configuration/security",
+                        "/configuracao/ui",
+                        "/recursos-swagger/**",
+                        "/configuracao/seguranca",
                         "/swagger-ui.html",
                         "/webjars/**").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/v1/auth/login").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/v1/user/recover-password").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.PATCH, "/v1/user/reset-password/**").permitAll()
-                .anyRequest().authenticated().and().addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class).cors();
+                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/v1/user/recuperar-senha").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.PATCH, "/v1/user/resetar-senha/**").permitAll()
+                .anyRequest().authenticated().and().addFilterBefore(filtroSeguranca, UsernamePasswordAuthenticationFilter.class).cors();
     }
 
     @Bean

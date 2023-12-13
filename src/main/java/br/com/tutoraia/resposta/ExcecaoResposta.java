@@ -1,4 +1,4 @@
-package br.com.tutoraia.response;
+package br.com.tutoraia.resposta;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ExceptionResponse {
+public class ExcecaoResposta {
     private String exceptionName;
     private String message;
 }

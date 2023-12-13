@@ -1,4 +1,4 @@
-package br.com.tutoraia.model;
+package br.com.tutoraia.modelo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users")
+@Table(name = "usuarios")
 @Getter
 @Setter
 public class User implements UserDetails {
@@ -23,13 +23,13 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "nome", nullable = false)
     private String name;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "senha", nullable = false)
     private String password;
 
     @Override

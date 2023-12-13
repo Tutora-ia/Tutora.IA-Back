@@ -1,7 +1,7 @@
 package br.com.tutoraia.infra;
 
-import br.com.tutoraia.response.ExceptionResponse;
-import br.com.tutoraia.exceptions.InvalidParamsException;
+import br.com.tutoraia.resposta.ExcecaoResposta;
+import br.com.tutoraia.excecao.ParametrosInvalidosExcecao;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,9 +14,9 @@ import java.util.Map;
 @ControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler(InvalidParamsException.class)
-    public ResponseEntity<ExceptionResponse> handleInvalidParamsException(InvalidParamsException ex) {
-        return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getName(), ex.getMessage()));
+    @ExceptionHandler(ParametrosInvalidosExcecao.class)
+    public ResponseEntity<ExcecaoResposta> handleInvalidParamsException(ParametrosInvalidosExcecao ex) {
+        return ResponseEntity.badRequest().body(new ExcecaoResposta(ex.getName(), ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

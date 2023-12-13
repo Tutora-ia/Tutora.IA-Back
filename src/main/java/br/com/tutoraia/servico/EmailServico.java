@@ -1,6 +1,6 @@
-package br.com.tutoraia.service;
+package br.com.tutoraia.servico;
 
-import br.com.tutoraia.model.User;
+import br.com.tutoraia.modelo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.Properties;
 
 @Service
 @Slf4j
-public class EmailService {
+public class EmailServico {
 
     public void sendEmail(User user, String recoverLink) {
         final String htmlContent =
@@ -38,7 +38,7 @@ public class EmailService {
         Session session = Session.getDefaultInstance(properties,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("@gmail.com", ""); // tutoraia@gmail.com || hsdighwqau8dgwayu -> senha criptografada pelo google
+                        return new PasswordAuthentication("tutora.ia@outlook.com", "Aurora2023"); // tutoraia@gmail.com || hsdighwqau8dgwayu -> senha criptografada pelo google
                     }
                 });
         session.setDebug(true);
@@ -46,13 +46,13 @@ public class EmailService {
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("oficialstylesync@gmail.com")); // tutoraia@gmail.com
+            message.setFrom(new InternetAddress("tutora.ia@outlook.com"));
 
             Address[] toUser = InternetAddress
                     .parse(user.getEmail());
 
             message.setRecipients(Message.RecipientType.TO, toUser);
-            message.setSubject("Redefinição de Senha - Laçoos");
+            message.setSubject("Redefinição de Senha - Tutora.IA");
             message.setContent(htmlContent, "text/html; charset=utf-8");
             Transport.send(message);
         } catch (MessagingException e) {

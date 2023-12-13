@@ -1,4 +1,4 @@
-package br.com.tutoraia.configuration;
+package br.com.tutoraia.configuracao;
 
 import java.util.Collections;
 
@@ -15,13 +15,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfiguration {
+public class ConfiguracaoSwagger {
 
-    private static final String SERVICE_NAME = "API-LAÇOOS";
-    private static final String SERVICE_DESCRIPTION = "API LAÇOOS";
+    private static final String SERVICE_NAME = "API-TUTORA.IA";
+    private static final String SERVICE_DESCRIPTION = "API TUTORA.IA";
     private static final String SERVICE_VERSION = "1.0.0";
-    private static final String BASE_PACKAGE = "br.com.lacoos.controller";
+    private static final String BASE_PACKAGE = "br.com.tutoraia.controller";
 
+
+
+    private ApiInfo metaData() {
+        return new ApiInfoBuilder().title(SERVICE_NAME)
+                .description(SERVICE_DESCRIPTION).version(SERVICE_VERSION).build();
+    }
     @Bean
     public Docket apiConfigDocs() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -30,11 +36,6 @@ public class SwaggerConfiguration {
                 .paths(PathSelectors.any()).build()
                 .apiInfo(metaData())
                 .securitySchemes(Collections.singletonList(apiKey()));
-    }
-
-    private ApiInfo metaData() {
-        return new ApiInfoBuilder().title(SERVICE_NAME)
-                .description(SERVICE_DESCRIPTION).version(SERVICE_VERSION).build();
     }
 
     private ApiKey apiKey() {

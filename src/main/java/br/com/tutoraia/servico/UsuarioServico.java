@@ -1,15 +1,15 @@
-package br.com.tutoraia.service;
+package br.com.tutoraia.servico;
 
 import br.com.tutoraia.request.LoginRequest;
-import br.com.tutoraia.request.PasswordRecoverRequest;
-import br.com.tutoraia.request.UserRequest;
-import br.com.tutoraia.response.DefaultMessageResponse;
-import br.com.tutoraia.response.TokenResponse;
-import br.com.tutoraia.exceptions.InvalidParamsException;
-import br.com.tutoraia.model.PasswordResetToken;
-import br.com.tutoraia.model.User;
-import br.com.tutoraia.repository.PasswordResetTokenRepository;
-import br.com.tutoraia.repository.UserRepository;
+import br.com.tutoraia.request.RecuperacaoSenhaRequest;
+import br.com.tutoraia.request.UsuarioRequest;
+import br.com.tutoraia.resposta.MensagemPadraoResposta;
+import br.com.tutoraia.resposta.TokenResposta;
+import br.com.tutoraia.excecao.ParametrosInvalidosExcecao;
+import br.com.tutoraia.modelo.TokenResetSenha;
+import br.com.tutoraia.modelo.User;
+import br.com.tutoraia.repository.TokenResetSenhaRepository;
+import br.com.tutoraia.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -30,76 +30,76 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @Transactional
-public class UserService {
+public class UsuarioServico {
 
-    private final UserRepository userRepository;
+    private final UsuarioRepository usuarioRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final AuthenticationManager manager;
-    private final TokenService tokenService;
-    private PasswordResetTokenRepository passwordResetTokenRepository;
-    private final EmailService emailService;
+    private final TokenServico tokenServico;
+    private TokenResetSenhaRepository tokenResetSenhaRepository;
+    private final EmailServico emailServico;
 
-    public ResponseEntity<Void> signUp(UserRequest userRequest) {
-        log.info("Save user: {}", userRequest);
-        if (userRepository.existsByEmail(userRequest.getEmail())) {
+    public ResponseEntity<Void> signUp(UsuarioRequest usuarioRequest) {
+        log.info("Save user: {}", usuarioRequest);
+        if (usuarioRepository.existsByEmail(usuarioRequest.getEmail())) {
             log.error("Email already exists");
-            throw new InvalidParamsException("Email already exists");
+            throw new ParametrosInvalidosExcecao("Email already exists");
         }
         User user = new User();
-        BeanUtils.copyProperties(userRequest, user);
-        user.setPassword(encoder.encode(userRequest.getPassword()));
-        userRepository.save(user);
+        BeanUtils.copyProperties(usuarioRequest, user);
+        user.setPassword(encoder.encode(usuarioRequest.getPassword()));
+        usuarioRepository.save(user);
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<TokenResponse> login(LoginRequest loginRequest) {
+    public ResponseEntity<TokenResposta> login(LoginRequest loginRequest) {
         log.info("Login user: {}", loginRequest);
         UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         Authentication auth = manager.authenticate(userToken);
-        String token = tokenService.generateToken((User) auth.getPrincipal());
-        return ResponseEntity.status(HttpStatus.OK).body(new TokenResponse(token));
+        String token = tokenServico.generateToken((User) auth.getPrincipal());
+        return ResponseEntity.status(HttpStatus.OK).body(new TokenResposta(token));
     }
 
     public ResponseEntity<String> recoverPassword(String email) {
         log.info("Recover password for email: {}", email);
-        Optional<User> user = userRepository.byEmail(email);
+        Optional<User> user = usuarioRepository.byEmail(email);
         if (user.isPresent()) {
             log.info("User found: {}", user.get());
-            PasswordResetToken passwordResetToken = PasswordResetToken.builder()
+            TokenResetSenha tokenResetSenha = TokenResetSenha.builder()
                     .token(UUID.randomUUID().toString())
                     .user(user.get())
                     .expiryDate(LocalDateTime.now())
                     .build();
-            passwordResetTokenRepository.save(passwordResetToken);
-            emailService.sendEmail(user.get(), "lacoos.com.br/recuperar-senha/" + passwordResetToken.getToken());
+            tokenResetSenhaRepository.save(tokenResetSenha);
+            emailServico.sendEmail(user.get(), "tutora-ia.com/recuperar-senha/" + tokenResetSenha.getToken());
             return ResponseEntity.ok().build();
         }
         log.error("User not found for email: {}", email);
         return ResponseEntity.badRequest().build();
     }
 
-    public ResponseEntity<DefaultMessageResponse> resetPassword(String token, PasswordRecoverRequest password) {
+    public ResponseEntity<MensagemPadraoResposta> resetPassword(String token, RecuperacaoSenhaRequest password) {
         log.info("Reset password for token: {}", token);
-        Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
+        Optional<TokenResetSenha> passwordResetToken = tokenResetSenhaRepository.findByToken(token);
         if (passwordResetToken.isPresent() && !passwordResetToken.get().getUsed()) {
             log.info("Token found: {}", passwordResetToken.get());
             LocalDateTime tokenCreationTime = passwordResetToken.get().getExpiryDate();
             LocalDateTime expirationTime = tokenCreationTime.plusHours(24);
             if (expirationTime.isBefore(LocalDateTime.now())) {
                 log.error("Token expired");
-                return ResponseEntity.badRequest().body(new DefaultMessageResponse("Token expired"));
+                return ResponseEntity.badRequest().body(new MensagemPadraoResposta("Token expired"));
             }
             if (!password.getPassword().equals(password.getConfirmPassword())) {
                 log.error("Password and confirm password not match");
-                return ResponseEntity.badRequest().body(new DefaultMessageResponse("Password and confirm password not match"));
+                return ResponseEntity.badRequest().body(new MensagemPadraoResposta("Password and confirm password not match"));
             }
             User user = passwordResetToken.get().getUser();
             user.setPassword(encoder.encode(password.getPassword()));
-            userRepository.save(user);
+            usuarioRepository.save(user);
             passwordResetToken.get().setUsed(true);
-            return ResponseEntity.ok().body(new DefaultMessageResponse("Password updated successfully"));
+            return ResponseEntity.ok().body(new MensagemPadraoResposta("Password updated successfully"));
         }
         log.error("Token not found");
-        return ResponseEntity.badRequest().body(new DefaultMessageResponse("Recover password token not found"));
+        return ResponseEntity.badRequest().body(new MensagemPadraoResposta("Recover password token not found"));
     }
 }

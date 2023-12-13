@@ -3,7 +3,7 @@ package br.com.tutoraia.request;
 import lombok.Data;
 
 @Data
-public class PasswordRecoverRequest {
+public class RecuperacaoSenhaRequest {
 
     private String password;
     private String confirmPassword;

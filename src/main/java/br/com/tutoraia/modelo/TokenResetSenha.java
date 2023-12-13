@@ -1,4 +1,4 @@
-package br.com.tutoraia.model;
+package br.com.tutoraia.modelo;
 
 import lombok.*;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PasswordResetToken {
+public class TokenResetSenha {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

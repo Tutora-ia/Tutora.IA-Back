@@ -1,7 +1,7 @@
-package br.com.tutoraia.configuration;
+package br.com.tutoraia.configuracao;
 
-import br.com.tutoraia.repository.UserRepository;
-import br.com.tutoraia.service.TokenService;
+import br.com.tutoraia.repository.UsuarioRepository;
+import br.com.tutoraia.servico.TokenServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,20 +15,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter {
+public class FiltroSeguranca extends OncePerRequestFilter {
 
     @Autowired
-    UserRepository userRepository;
+    UsuarioRepository usuarioRepository;
 
     @Autowired
-    TokenService tokenService;
+    TokenServico tokenServico;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var tokenJWT = recoverToken(request);
         if(tokenJWT != null){
-            var subject = tokenService.getSubject(tokenJWT);
-            var user = userRepository.findByEmail(subject);
+            var subject = tokenServico.getSubject(tokenJWT);
+            var user = usuarioRepository.findByEmail(subject);
             var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
