@@ -39,7 +39,10 @@ public class TokenService {
             var algoritimo = Algorithm.HMAC256(password);
             return JWT.create()
                     .withIssuer("Turoiaia")
-                    .withSubject(user.getEmail())
+                    .withClaim("id", user.getId())
+                    .withClaim("name", user.getName())
+                    .withClaim("email", user.getEmail())
+                    .withClaim("password", user.getPassword())
                     .withExpiresAt(expirationDate())
                     .sign(algoritimo);
         }catch (JWTCreationException e){

@@ -17,10 +17,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfiguration {
 
-    private static final String SERVICE_NAME = "API-LAÇOOS";
-    private static final String SERVICE_DESCRIPTION = "API LAÇOOS";
+    private static final String SERVICE_NAME = "API-TUTORA.IA";
+    private static final String SERVICE_DESCRIPTION = "API TUTORA.IA";
     private static final String SERVICE_VERSION = "1.0.0";
-    private static final String BASE_PACKAGE = "br.com.lacoos.controller";
+    private static final String BASE_PACKAGE = "br.com.tutora-ia.controller";
 
     @Bean
     public Docket apiConfigDocs() {

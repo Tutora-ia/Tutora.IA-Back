@@ -9,10 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/v1/auth")
 @AllArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final UserService userService;
@@ -23,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<TokenResponse> login(@RequestBody @Valid      LoginRequest loginRequest) {
         return userService.login(loginRequest);
     }
 
