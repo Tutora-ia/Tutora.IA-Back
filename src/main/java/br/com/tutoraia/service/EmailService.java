@@ -52,7 +52,7 @@ public class EmailService {
                     .parse(user.getEmail());
 
             message.setRecipients(Message.RecipientType.TO, toUser);
-            message.setSubject("Redefinição de Senha - Laçoos");
+            message.setSubject("Redefinição de Senha - não funcionando");
             message.setContent(htmlContent, "text/html; charset=utf-8");
             Transport.send(message);
         } catch (MessagingException e) {
